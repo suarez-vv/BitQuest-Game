@@ -2,6 +2,7 @@
 #define JUEGO_H
 
 #include "mapas.h"
+#include <stdbool.h>
 
 //Inicialización del juego
 void iniciarJuego();
@@ -19,9 +20,12 @@ void limpiar();
 void cambiarNivel(int);
 
 //Función en ensamblador
-int contarAcumulables(char*, int, char);
+int contarAcumulables(char*, int, int);
+
+//Veirificar si se puede abrir una puerta en el mapa
+bool abrirPuerta(int);
 
 //Actualizar caracteres de mapa
-void actualizarMapa(char*, int);
+void actualizarMapa(char*, int, int);
 
 #endif

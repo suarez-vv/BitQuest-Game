@@ -3,12 +3,12 @@ default rel
 global contarAcumulables, actualizarMapa
 section .text
 
-; en c declaramos asi: int contarCaracteres(char *mapa, int totalCeldas, char objetivo)
+; en c declaramos asi: int contarAcumulables(char *mapa, int totalCeldas, int posMapa)
 
 ; rdi = direccion del mapa
 ; rsi = total de celdas
-; rdx = caracter objetivo
-; eax = cantidad encontrada
+; rdx = posicion actual en el mapa
+; eax = retorno del identificador de caracter
 
 
 contarAcumulables:

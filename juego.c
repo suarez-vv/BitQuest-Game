@@ -34,10 +34,36 @@ void estadoJuego(){
     if(actualX >=0 && actualX <mapSize && actualY >= 0 && actualY < mapSize){
         int posMapa = actualY * mapSize + actualX;
 
+        int auxCasilla;
+
         //Logica para las casillas y lo que haya en ellas
-        monedasAcum = contarAcumulables(mapActual, mapSize, 'M');
-        llavesAcum = contarAcumulables(mapActual, mapSize, 'K'); /*
-        Hay que revisar si es una pared que no se atraviese esta,
+        auxCasilla = contarAcumulables(mapActual, mapSize, posMapa);
+        
+        switch(auxCasilla){
+            case 0: monedasAcum++;
+                break;
+            case 1: llavesAcum++;
+                break;
+            case 2: 
+                    bool abrir = abrirPuerta(llavesAcum);
+                    if(abrir){
+                        llavesAcum--;
+                    }else{
+                        auxCasilla = 4;
+                    }
+                break;
+            case 3: //Logica para la salida
+                break;
+        };
+
+        //Un 4 significa una pared en tal caso no se movera y no hay que atcualizar mapa
+        if(auxCasilla != 4){
+            jugadorX = actualX;
+            jugadorY = actualY;
+
+            actualizarMapa(mapActual, mapSize, posMapa);
+        }
+        /*Hay que revisar si es una pared que no se atraviese esta,
         si es una moneda recogerla y actualizar el mapa,
         si es una llave recogerla y actualizar el mapa,
         si es camino realizar el movimiento,
@@ -96,6 +122,9 @@ void cambiarNivel(int nivel){
     }
 }
 
-int contarAcumulables(char *mapa, int totalCeldas, char objetivo);
+//Funciones de ensamblador
+int contarAcumulables(char *mapa, int totalCeldas, int posMapa);
 
-void actualizarMapa(char *mapa, int totalCeldas);
+bool abrirPuerta(int numLlaves);
+
+void actualizarMapa(char *mapa, int totalCeldas, int posMapa);
