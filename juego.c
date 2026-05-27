@@ -179,3 +179,7 @@ int contarAcumulables(char *mapa, int posSigMapa);
 bool abrirPuerta(int numLlaves);
 
 void actualizarMapa(char *mapa, int posActualMapa, int posSigMapa);
+
+int calcularPuntaje(int monedas, int llaves, int pasos);
+
+int contarCeldasDisp(char *mapa, int totalCeldas);
