@@ -1,6 +1,6 @@
 bits 64
 default rel
-global contarAcumulables, actualizarMapa, abrirPuerta
+global contarAcumulables, actualizarMapa, abrirPuerta, calcularPuntaje
 section .text
 
 contarAcumulables:
@@ -84,3 +84,28 @@ abrirPuerta:
 
     .fin_abrir_puerta:
         RET
+
+calcularPuntaje:
+    ; edi = monedas
+    ; esi = llaves
+    ; edx = pasos
+
+    ;monedas * 100 (por decidir)
+    mov eax, edi
+    ;imul eax, 100
+
+    ;llaves * 500 (por decidir)
+    mov r8d, esi
+    ;imul r8d, 500
+
+    ;sumar
+    add eax, r8d
+
+    ;pasos * 2 (por decidir)
+    mov r9d, edx
+    ;imul r9d, 2  ;por 2 para penalizar si da muchos pasos 
+
+    ;restar pasos
+    sub eax, r9d ;retornar el puntaje final
+
+    ret
