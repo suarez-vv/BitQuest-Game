@@ -1,6 +1,6 @@
 bits 64
 default rel
-global contarAcumulables, actualizarMapa, abrirPuerta, calcularPuntaje
+global contarAcumulables, actualizarMapa, abrirPuerta, calcularPuntaje, contarCeldasDisp
 section .text
 
 contarAcumulables:
@@ -108,4 +108,33 @@ calcularPuntaje:
     ;restar pasos
     sub eax, r9d ;retornar el puntaje final
 
+    ret
+
+contarCeldasDisp:
+
+    ;rdi = mapa
+    ;rsi = total de celdas
+
+    xor eax, eax          ;contador = 0
+
+    cmp rsi, 0
+    jle .fin_contar
+
+.loop:
+
+    mov r8b, [rdi]        ;leer caracter actual
+
+    cmp r8b, '.'          ;comparar con piso
+    jne .noCoincide
+
+    inc eax               ;contador++
+
+.noCoincide:
+
+    inc rdi               ;siguiente celda
+    dec rsi               ;total--
+
+    jnz .loop
+
+.fin_contar:
     ret
