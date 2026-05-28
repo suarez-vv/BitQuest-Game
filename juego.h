@@ -19,19 +19,22 @@ void limpiar();
 //Identificar en que nivel del juego se encuentra el jugador
 void cambiarNivel();
 
-//Función en ensamblador
-int contarAcumulables(char*, int);
+//Contar un caracter especifico del mapa (Funcion obligatoria 1)
+int contarCaracter(char*, int, char);
 
-//Veirificar si se puede abrir una puerta en el mapa
-bool abrirPuerta(int);
+//Contar un caracter especifico del mapa (Funcion obligatoria 2)
+int validarMovimiento(char*, int, int, int); //(Se puede usar en lugar de actualizarMapa)
+
+//Calcular puntaje al finalizar el juego (Funcion olbigatoria 3)
+int calcularPuntaje(int, int, int);
+
+//Detectar si hay cierto objeto en el mapa (Funcion olbigatoria 4)
+int detectarObjeto(char*, int, int, int, char); //contarAcumulables (Se puede usar en lugar de abrirPuerta)
+
+//Contar un caracter especifico del mapa (Funcion obligatoria 5)
+int contarCeldasLibres(char*, int); //contarCeldasDisp
 
 //Actualizar caracteres de mapa
-void actualizarMapa(char*, int, int);
-
-//Calcular puntaje al finalizar nivel
-int calcularPuntaje(int monedas, int llaves, int pasos);
-
-//Contar celdas disponibles
-int contarCeldasDisp(char *mapa, int totalCeldas);
+void actualizarMapa(char*, int, int, int, int, int);
 
 #endif

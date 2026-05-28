@@ -1,94 +1,73 @@
 bits 64
 default rel
-global contarAcumulables, actualizarMapa, abrirPuerta, calcularPuntaje, contarCeldasDisp
+global contarCaracter, validarMovimiento, calcularPuntaje, detectarObjeto, contarCeldasLibres, actualizarMapa
 section .text
 
-contarAcumulables:
+;--------------- CONTAR UN CARACTER ESPECIFICO --------------------
+contarCaracter:
     ;rdi = mapa
-    ;rsi = posicion siguinete (seleccionada) en el mapa
+    ;esi = total celdas
+    ;edx = caracter buscado
+    TEST    RDI, RDI
+    JZ      .fin_contarCaracter
 
-    test rdi, rdi
-    jz .fin_contarAcum
+    XOR     EAX, EAX
+    MOV     R9B, EDX
+    MOV     R10B, ESI ;Contador de celdas
 
-    mov r8b, [rdi+rsi]        ; leer caracter siguiente en el mapa
+    .loop_recorrer:
+        CMP     R10B, 0
+        JMP     .fin_contarCaracter
 
-    cmp r8b, 'M'          ; comparar con moneda
-    je .moneda
+        MOV     R11B, [RDI]
+        CMP     R11B, R9B
+        JNE     .siguiente
+        
+        INC EAX
 
-    cmp r8b, 'K'          ; comparar con llave
-    je .llave
+    .siguiente:
+        INC     RDI
+        DEC     R10B
+        JMP     .loop_recorrer
 
-    cmp r8b, 'D'          ; comparar con puerta
-    je .puerta
-
-    cmp r8b, 'E'          ; comparar con salida
-    je  .salida
-
-    cmp r8b, '#'          ; comparar con pared
-    je  .pared
-
-    jmp .piso
-
-    .moneda:
-        mov eax, 0
-        jmp .fin_contarAcum
-
-    .llave:
-        mov eax, 1
-        jmp .fin_contarAcum
-
-    .puerta:
-        mov eax, 2
-        jmp .fin_contarAcum
-
-    .salida:
-        mov eax, 3
-        jmp .fin_contarAcum
-
-    .pared:
-        mov eax, 4
-        jmp .fin_contarAcum
-    
-    .piso:
-        mov eax, 5
-
-    .fin_contarAcum:
-        ret
-
-actualizarMapa:
-    ; rdi = mapa
-    ; rsi = posicion actual en el mapa
-    ; rdx = posicion siguiente (seleccionada) en el mapa
-
-    mov r8b, [rdi+rdx]        ; leer caracter siguiente en el mapa (respaldo)
-    mov al, [rdi+rsi]         ;obtener el caracter del personaje (posicion actual en el mapa)
-
-    mov [rdi+rdx], al
-    mov byte ptr [rdi+rsi], '.'
-
-    .fin_actMapa:
+    .fin_contarCaracter:
         RET
 
-abrirPuerta:
-    ;edi = numero de llaves que tiene el jugador
-    CMP EDI, 1
-    JGE .abrir
-    JMP .no_abrir
+;--------------- VALIDAR QUE NO SE MUEVA HACIA UNA PARED --------------------
+validarMovimiento:
+    ;rdi = mapa
+    ;esi = numero de columnas/filas en el mapa
+    ;edx = Propuesta de nueva fila
+    ;ecx = Propuesta de nueva columna
 
-    .abrir:
-        MOV EAX, 1
-        JMP .fin_abrir_puerta
-    
-    .no_abrir:
-        MOV EAX, 0
+    TEST    RDI, RDI
+    JZ      .fin_validarMovimiento
+    ;Calcular indice
+    MOV     EAX, EDX
+    IMUL    EAX, ESI
+    ADD     EAX, ECX
 
-    .fin_abrir_puerta:
+    ;Convertir indice a desplazamiento
+    MOVSXD  RAX, EAX
+    MOV     R10B, [RDI + RAX]
+
+    CMP     R10B, '#'
+    JE     .es_pared
+
+    MOV     EAX, 1 ;Si no es pared devolvemos un 1
+    JMP     .fin_validarMovimiento
+
+    .es_pared
+        MOV EAX, 0 ;Si es pared devolvemos un cero
+
+    .fin_validarMovimiento:
         RET
 
+;--------------- CALCULAR PUNTAJE FINAL --------------------
 calcularPuntaje:
     ; edi = monedas
-    ; esi = llaves
-    ; edx = pasos
+    ; esi = pasos (llaves esta en duda)
+    ; edx = numero de niveles completados
 
     ;monedas * 100 (por decidir)
     mov eax, edi
@@ -110,17 +89,60 @@ calcularPuntaje:
 
     ret
 
-contarCeldasDisp:
+;--------------- DETECTAR LLAVES, MONEDAS, PUERTA,  SALIDA Y PISO --------------------
+detectarObjeto:
+    ;rdi = Mapa
+    ;esi = Numero de columnas/filas en el mapa
+    ;edx = Propuesta de nueva fila
+    ;ecx = Propuesta de nueva columna
+    ;r8 = Caracter a comparar
 
+    test rdi, rdi
+    jz .fin_detectarObjeto
+
+    ;Calcular indice
+    mov     eax, edx
+    IMUL    eax, esi
+    ADD     eax, ecx
+
+    MOVSXD  rax, eax
+    MOV     r10b, [rdi + rax]
+
+    cmp r10b, 'M'          ; comparar con moneda
+    je .detectado
+
+    cmp r10b, 'K'          ; comparar con llave
+    je .detectado
+
+    cmp r10b, 'D'          ; comparar con puerta
+    je .detectado
+
+    cmp r10b, 'E'          ; comparar con salida
+    je  .detectado
+
+    cmp r10b, '.'           ;Comparar con piso
+    je  .detectado
+
+    mov eax, 0
+    jmp .fin_detectarObjeto
+
+    .detectado:
+        mov eax, 1
+        jmp .fin_detectarObjeto
+
+    .fin_detectarObjeto:
+        ret
+
+;--------------- CONTAR LA CANTIDAD DE CELDAS DISPONIBLES PARA MOVERSE --------------------
+contarCeldasLibres:
     ;rdi = mapa
-    ;rsi = total de celdas
+    ;esi = total de celdas
 
     xor eax, eax          ;contador = 0
 
-    cmp rsi, 0
-    jle .fin_contar
-
 .loop:
+    cmp esi, 0
+    jle .fin_contar
 
     mov r8b, [rdi]        ;leer caracter actual
 
@@ -132,9 +154,45 @@ contarCeldasDisp:
 .noCoincide:
 
     inc rdi               ;siguiente celda
-    dec rsi               ;total--
+    dec esi               ;total--
 
-    jnz .loop
+    jmp .loop
 
 .fin_contar:
     ret
+
+;--------------- ACTUALIZAR EL MAPA LUEGO DE HACER UN MOVIMIENTO --------------------
+actualizarMapa:
+    ; rdi = Mapa
+    ; esi = Numero columnas/filas
+    ; edx = Fila actual 
+    ; ecx = Columna actual
+    ; r8 = Fila destino 
+    ; r9 = Columna destino
+
+    TEST    RDI, RDI
+    JZ      .fin_actMapa
+
+    ;Indice de la posicion actual
+    MOV     EAX, EDX
+    IMUL    EAX, ESI
+    ADD     EAX, ECX
+
+    MOVSXD  RAX, EAX
+    LEA     R10, [RDI + RAX] ;Posicion actual del jugador
+
+    ;Indice de la posicion a mover
+    MOV     EAX, R8
+    IMUL    EAX, ESI
+    ADD     EAX, R9
+
+    MOVSXD  RAX, EAX
+    LEA     R11, [RDI + RAX] ;Posicion donde el jugador quiere moverse
+
+    MOV AL, [R10]         ;obtener el caracter del personaje (posicion actual en el mapa)
+
+    MOV [R11], AL
+    MOV byte ptr [R10], '.'
+
+    .fin_actMapa:
+        RET

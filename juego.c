@@ -11,9 +11,23 @@ int jugadorX = 2;
 int jugadorY = 2;
 int nivel = 0;
 int mapSize = 0;
+int celdasLibres = 0;
+bool iniciandoNivel = true;
+bool actualiMapa = false;
 char *mapActual = NULL;
-int monedasAcum = 0;
-int llavesAcum = 0;
+bool llave = false;
+int totalMonedas = 0; //Cantidad total de monedas en todos los niveles
+//int totalLlaves = 0; //Cantidad total de llaves en todos los niveles
+int monedas_Nivel = 0; //Cantidad de monedas que hay en un nivel
+//int llaves_Nivel = 0; //Cantidad de llaves que hay en un nivel
+int monedasObtNivel = 0; //Monedas obtenidas en un nivel
+//int llavesObtNivel = 0; //Llaves obtenidas en un nivel
+int pasosNivel = 0; //Pasos realizados durante un nivel
+int monedasAcum = 0; //Monedas acumuladas durante todo el juego
+//int llavesAcum = 0; //Llaves acumuladas durante todo el juego
+int pasosAcum = 0; //Pasos realizados durante todo el juego
+int nivelesComp = 0; //Cantidad de niveles completados
+int puntajeFinal = 0; //Puntaje final del juego
 int estado = 1; //1=Jugando un nivel, 2=Pasando de nivel, 3=Final del juego
 
 void iniciarJuego(){
@@ -35,47 +49,58 @@ void estadoJuego(){
         return;
     }
 
-    int actualX = jugadorX;
-    int actualY = jugadorY;
-    int auxCasilla;
+    if(iniciandoNivel){
+        celdasLibres = contarCeldasLibres(mapActual, (mapSize*2));
+        monedas_Nivel = contarCaracter(mapActual, (mapSize*2), 'M');
+        iniciandoNivel = false;
+    }
+    
+
+    int destinoX = jugadorX;
+    int destinoY = jugadorY;
 
     //Movimiento con wasd
-    if(IsKeyDown(KEY_W)) actualY--; //Hacia arriba
-    if(IsKeyDown(KEY_A)) actualX--; //Izquierda
-    if(IsKeyDown(KEY_S)) actualY++; //Abajo
-    if(IsKeyDown(KEY_D)) actualX++; //Derecha
+    if(IsKeyDown(KEY_W)) destinoY--; //Hacia arriba
+    if(IsKeyDown(KEY_A)) destinoX--; //Izquierda
+    if(IsKeyDown(KEY_S)) destinoY++; //Abajo
+    if(IsKeyDown(KEY_D)) destinoX++; //Derecha
 
-    //Comprobar que este dentro del mapa
-    if(actualX >=0 && actualX <mapSize && actualY >= 0 && actualY < mapSize){
-        int posSigMapa = actualY * mapSize + actualX;
-        int posActualMapa = jugadorY * mapSize + jugadorX;
+    //Comprobar que la casilla propuesta este dentro del mapa
+    if(destinoX >=0 && destinoX <mapSize && destinoY >= 0 && destinoY < mapSize){
+        //int posSigMapa = actualY * mapSize + actualX;
+        //int posActualMapa = jugadorY * mapSize + jugadorX;
 
-        //Logica para las casillas y lo que haya en ellas
-        auxCasilla = contarAcumulables(mapActual, posSigMapa);
-        
-        switch(auxCasilla){
-            case 0: monedasAcum++;
-                break;
-            case 1: llavesAcum++;
-                break;
-            case 2: 
-                    bool abrir = abrirPuerta(llavesAcum);
-                    if(abrir){
-                        llavesAcum--;
-                    }else{
-                        auxCasilla = 4;
-                    }
-                break;
-            default: TraceLog(LOG_WARNING, "Casilla desconocida, revisar el mapa");
-                break;
-        };
+        while(true){
+            //Validar el movimiento del jugador
+            if(validarMovimiento(mapActual, mapSize, destinoY, destinoX)){ //Si no es una pared revisamos qué es
+                actualiMapa = true;
+                if(detectarObjeto(mapActual, mapSize, destinoY, destinoX, 'M')){ //Si es una moneda
+                    monedasObtNivel++;
+                }else if(detectarObjeto(mapActual, mapSize, destinoY, destinoX, 'K')){ //Si es una llave
+                    llave = true;
+                    //llavesObtNivel++; //Posiblemete cambiar por booleano si es una sola llave
+                }else if(detectarObjeto(mapActual, mapSize, destinoY, destinoX, 'D')){ //Si es una puerta
+                    //Si no tiene la llave para abrir la puerta entonces no habra movimiento y el mapa no se actualizará
+                    if(!llave) actualiMapa = false;
 
-        //Un 4 significa una pared o una puerta que no se puede abrir, en tal caso no se movera y no hay que atcualizar mapa
-        if(auxCasilla != 4){
-            actualizarMapa(mapActual, posActualMapa, posSigMapa);
+                }else if(detectarObjeto(mapActual, mapSize, destinoY, destinoX, 'E')){ //Si es una salida
+                    estado = 2;
+                }else if(detectarObjeto(mapActual, mapSize, destinoY, destinoX, '.')){ // Si es piso
+                    pasosNivel++;
+                }else{
+                    TraceLog(LOG_WARNING, "Casilla desconocida, informar de revisión para el mapa");
+                }
+            }else{ //Si hay una pared no se puede mover hacia porque no se puede atravesar paredes, el mapa no se actualiza
+                actualiMapa = false;
+            }
+        }
 
-            jugadorX = actualX;
-            jugadorY = actualY;
+        //Sí se realizo un movimiento valido y hay que actualizar el mapa, sino no se movera y no hay que atcualizar mapa
+        if(actualiMapa){
+            actualizarMapa(mapActual, mapSize, jugadorY, jugadorX, destinoY, destinoX);
+
+            jugadorX = destinoX;
+            jugadorY = destinoY;
         }
     }
 
@@ -90,11 +115,7 @@ void estadoJuego(){
     if(camX > mapSize - VIEW) camX = mapSize - VIEW;
     if(camY > mapSize - VIEW) camY = mapSize - VIEW;
 
-    if(auxCasilla == 3){
-        estado = 2;
-        return;
-    }
-
+    if(estado == 2) return;
 }
 
 void llamarDibujar(){
@@ -107,32 +128,37 @@ void llamarDibujar(){
 
         DrawText(TextFormat("Nivel: %d", nivel), 10, 10, 20, WHITE);
         DrawText(TextFormat("Monedas: %d", monedasAcum), 10, 30, 20, GOLD);
-        DrawText(TextFormat("Llaves: %d", llavesAcum), 10, 50, 20, WHITE);
+        //DrawText(TextFormat("Llaves: %d", llavesAcum), 10, 50, 20, WHITE);
     }else if(estado == 2){
         DrawText("FELICIDADES!!!", 200, 150, 40, YELLOW);
         DrawText(TextFormat("NIVEL %d COMPLETADO", nivel), 120, 220, 20, WHITE);
         
         switch(nivel){
             case 1:
-                DrawText(TextFormat("MONEDAS: %d/%d", monedasAcum, MAP1_MONEDAS), 200, 280, 20, WHITE);
-                DrawText(TextFormat("LLAVES: %d/%d", llavesAcum, MAP1_LLAVES), 200, 320, 20, WHITE);
+                DrawText(TextFormat("MONEDAS: %d/%d", monedasObtNivel, monedas_Nivel), 200, 280, 20, WHITE);
+                //DrawText(TextFormat("LLAVES: %d/%d", llavesObtNivel, llaves_Nivel), 200, 320, 20, WHITE);
                 DrawText("Presiona ENTER para ir al siguiente nivel", 120, 400, 20, WHITE);
                 break;
             case 2:
-                DrawText(TextFormat("MONEDAS: %d/%d", monedasAcum, MAP2_MONEDAS), 200, 280, 20, WHITE);
-                DrawText(TextFormat("LLAVES: %d/%d", llavesAcum, MAP2_LLAVES), 200, 320, 20, WHITE);
+                DrawText(TextFormat("MONEDAS: %d/%d", monedasObtNivel, monedas_Nivel), 200, 280, 20, WHITE);
+                //DrawText(TextFormat("LLAVES: %d/%d", llavesObtNivel, llaves_Nivel), 200, 320, 20, WHITE);
                 DrawText("Presiona ENTER para ir al siguiente nivel", 120, 400, 20, WHITE);
                 break;
             case 3: //Aqui agregar logica para terminarel juego
-                DrawText(TextFormat("MONEDAS: %d/%d", monedasAcum, MAP3_MONEDAS), 200, 280, 20, WHITE);
-                DrawText(TextFormat("LLAVES: %d/%d", llavesAcum, MAP3_LLAVES), 200, 320, 20, WHITE);
+                DrawText(TextFormat("MONEDAS: %d/%d", monedasObtNivel, monedas_Nivel), 200, 280, 20, WHITE);
+                //DrawText(TextFormat("LLAVES: %d/%d", llavesObtNivel, llaves_Nivel), 200, 320, 20, WHITE);
                 break;
             default: TraceLog(LOG_WARNING, "Error en el número de nivel");
                 break;
         }
     }else if(estado == 3){
-        DrawText("HAS COMPLETADO TODOS LOS NIVELES!!!", 150, 200, 40, WHITE);
+        puntajeFinal = calcularPuntaje(monedasAcum, pasosAcum, nivelesComp);
+        DrawText("GAME OVER", 150, 280, 40, YELLOW);
         DrawText("GRACIAS POR JUGAR", 80, 260, 40, GOLD);
+        DrawText(TextFormat("Monedas totales recolectadas: %d/%d", monedasAcum, totalMonedas), 200, 240, 30, WHITE);
+        DrawText(TextFormat("Pasos totales: %d", pasosAcum), 200, 220, 30, WHITE);
+        DrawText(TextFormat("Niveles completados: %d", nivelesComp), 200, 200, 30, WHITE);
+        DrawText(TextFormat("Puntaje final: %d", puntajeFinal), 200, 180, 30, WHITE);
     }
     
 
@@ -146,12 +172,17 @@ void limpiar(){
 
 void cambiarNivel(){
     //Iniciar-reiniciar variables del juego
+    totalMonedas += monedas_Nivel;
+    monedasAcum += monedasObtNivel;
+    pasosAcum += pasosNivel;
+    iniciandoNivel = true;
     camX = 0;
     camY=0;
     jugadorX=2;
     jugadorY=2;
-    monedasAcum = 0;
-    llavesAcum = 0;
+    monedasObtNivel = 0;
+    pasosNivel = 0;
+    llave = false;
 
     nivel++;
     if(nivel == 1){
@@ -174,12 +205,20 @@ void cambiarNivel(){
 }
 
 //Funciones de ensamblador
-int contarAcumulables(char *mapa, int posSigMapa);
+//Contar un caracter especifico del mapa (Funcion obligatoria 1)
+int contarCaracter(char *mapa, int mapSize, char buscado);
 
-bool abrirPuerta(int numLlaves);
+//Contar un caracter especifico del mapa (Funcion obligatoria 2)
+int validarMovimiento(char *mapa, int mapSize, int newColumna, int newFila); //(Se puede usar en lugar de actualizarMapa)
 
-void actualizarMapa(char *mapa, int posActualMapa, int posSigMapa);
+//Calcular puntaje al finalizar nivel (Funcion olbigatoria 3)
+int calcularPuntaje(int totalMonedasAcum, int cantPasos, int nivelComp);
 
-int calcularPuntaje(int monedas, int llaves, int pasos);
+//Detectar si hay cierto objeto en el mapa (Funcion olbigatoria 4)
+int detectarObjeto(char *mapa, int mapSize, int columnaRev, int filaRev, char buscado); //contarAcumulables (Se puede usar en lugar de abrirPuerta)
 
-int contarCeldasDisp(char *mapa, int totalCeldas);
+//Contar un caracter especifico del mapa (Funcion obligatoria 5)
+int contarCeldasLibres(char *mapa, int mapSize); //contarCeldasDisp
+
+//Actualizar el mapa luego de un movimiento
+void actualizarMapa(char *mapa, int mapSize, int columnaActual, int filaActual, int columnaMov, int filaMov);
