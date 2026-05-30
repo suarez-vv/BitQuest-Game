@@ -1,7 +1,5 @@
 #ifndef JUEGO_H
 #define JUEGO_H
-
-#include "mapas.h"
 #include <stdbool.h>
 
 //Inicialización del juego

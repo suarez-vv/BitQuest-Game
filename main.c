@@ -1,4 +1,5 @@
 #include "juego.h"
+#include "raylib.h"
 
 int main(){
     //Iniciar el juego

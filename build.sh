@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Compilación del archivo ASM
-if nasm -f elf641 *".asm" -o "procesos".o; then
+if nasm -f elf64 *".asm" -o "procesos".o; then
     echo ""
     echo "Archivo ASM compilado correctamente"
     echo ""

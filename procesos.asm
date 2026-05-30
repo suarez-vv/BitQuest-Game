@@ -12,12 +12,12 @@ contarCaracter:
     JZ      .fin_contarCaracter
 
     XOR     EAX, EAX
-    MOV     R9B, EDX
-    MOV     R10B, ESI ;Contador de celdas
+    MOV     R9B, DL
+    MOV     R10D, ESI ;Contador de celdas
 
     .loop_recorrer:
-        CMP     R10B, 0
-        JMP     .fin_contarCaracter
+        CMP     R10D, 0
+        JE     .fin_contarCaracter
 
         MOV     R11B, [RDI]
         CMP     R11B, R9B
@@ -27,7 +27,7 @@ contarCaracter:
 
     .siguiente:
         INC     RDI
-        DEC     R10B
+        DEC     R10D
         JMP     .loop_recorrer
 
     .fin_contarCaracter:
@@ -57,7 +57,7 @@ validarMovimiento:
     MOV     EAX, 1 ;Si no es pared devolvemos un 1
     JMP     .fin_validarMovimiento
 
-    .es_pared
+    .es_pared:
         MOV EAX, 0 ;Si es pared devolvemos un cero
 
     .fin_validarMovimiento:
@@ -108,27 +108,14 @@ detectarObjeto:
     MOVSXD  rax, eax
     MOV     r10b, [rdi + rax]
 
-    cmp r10b, 'M'          ; comparar con moneda
-    je .detectado
+    cmp r10b, r8b        
+    jne .no_es
 
-    cmp r10b, 'K'          ; comparar con llave
-    je .detectado
-
-    cmp r10b, 'D'          ; comparar con puerta
-    je .detectado
-
-    cmp r10b, 'E'          ; comparar con salida
-    je  .detectado
-
-    cmp r10b, '.'           ;Comparar con piso
-    je  .detectado
-
-    mov eax, 0
+    mov eax, 1
     jmp .fin_detectarObjeto
 
-    .detectado:
-        mov eax, 1
-        jmp .fin_detectarObjeto
+    .no_es:
+        mov eax, 0
 
     .fin_detectarObjeto:
         ret
@@ -182,9 +169,9 @@ actualizarMapa:
     LEA     R10, [RDI + RAX] ;Posicion actual del jugador
 
     ;Indice de la posicion a mover
-    MOV     EAX, R8
+    MOV     EAX, R8D
     IMUL    EAX, ESI
-    ADD     EAX, R9
+    ADD     EAX, R9D
 
     MOVSXD  RAX, EAX
     LEA     R11, [RDI + RAX] ;Posicion donde el jugador quiere moverse
@@ -192,7 +179,7 @@ actualizarMapa:
     MOV AL, [R10]         ;obtener el caracter del personaje (posicion actual en el mapa)
 
     MOV [R11], AL
-    MOV byte ptr [R10], '.'
+    MOV byte [R10], '.'
 
     .fin_actMapa:
         RET
