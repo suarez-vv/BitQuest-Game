@@ -64,30 +64,36 @@ validarMovimiento:
         RET
 
 ;--------------- CALCULAR PUNTAJE FINAL --------------------
+
+
+    global calcularPuntaje
+
 calcularPuntaje:
-    ; edi = monedas
-    ; esi = llaves
-    ; edx = pasos (llaves esta en duda)
-    ; ecx = numero de niveles completados
+    ; edi = monedas recolectadas
+    ; esi = llaves recolectadas
+    ; edx = pasos realizados
+    ; ecx = niveles completados
 
-    ;monedas * 100 (por decidir)
+    ; monedas * 100
     mov eax, edi
-    ;imul eax, 100
+    imul eax, 100
 
-    ;llaves * 500 (por decidir)
+    ; llaves * 500
     mov r8d, esi
-    ;imul r8d, 500
-
-    ;sumar
+    imul r8d, 500
     add eax, r8d
 
-    ;pasos * 2 (por decidir)
-    mov r9d, edx
-    ;imul r9d, 2  ;por 2 para penalizar si da muchos pasos 
+    ; niveles * 1000
+    mov r9d, ecx
+    imul r9d, 1000
+    add eax, r9d
 
-    ;restar pasos
-    sub eax, r9d ;retornar el puntaje final
+    ; pasos * 2 (penalización)
+    mov r10d, edx
+    imul r10d, 2
+    sub eax, r10d
 
+    ; eax regresa el puntaje final
     ret
 
 ;--------------- DETECTAR LLAVES, MONEDAS, PUERTA,  SALIDA Y PISO --------------------
