@@ -8,8 +8,8 @@
 
 int camX = 0;
 int camY = 0;
-int jugadorX = 2;
-int jugadorY = 2;
+int jugadorX = 1;
+int jugadorY = 1;
 int nivel = 0;
 int mapSize = 0;
 int celdasLibres = 0;
@@ -82,7 +82,7 @@ void estadoJuego(){
                 llavesObtNivel++;
                 llavesUtilNivel++;
             }else if(detectarObjeto(mapActual, mapSize, destinoY, destinoX, 'D')){ //Si es una puerta
-                if(llavesObtNivel < 1) actualiMapa = false; //Si no tiene una llave para abrir la puerta entonces no habra movimiento y el mapa no se actualizará
+                if(llavesUtilNivel < 1) actualiMapa = false; //Si no tiene una llave para abrir la puerta entonces no habra movimiento y el mapa no se actualizará
                 else llavesUtilNivel--; //Si tiene una llave para abrir la puerta entonces se consume la llave y se actualiza el mapa con el movimiento
             }else if(detectarObjeto(mapActual, mapSize, destinoY, destinoX, 'E')){ //Si es una salida
                 nivelesComp++;
@@ -144,11 +144,12 @@ void llamarDibujar(bool *status){
         ClearBackground(BLACK);
         DrawText("FELICIDADES!!!", 200, 150, 40, YELLOW);
         DrawText(TextFormat("NIVEL %d COMPLETADO", nivel), 120, 220, 20, WHITE);
-        DrawText(TextFormat("MONEDAS: %d/%d", monedasObtNivel, monedas_Nivel), 200, 280, 20, WHITE);
-        DrawText(TextFormat("LLAVES: %d/%d", llavesObtNivel, llaves_Nivel), 200, 320, 20, WHITE);
-        DrawText(TextFormat("PASOS: %d", pasosNivel), 200, 360, 20, WHITE);
+        DrawText(TextFormat("MONEDAS: %d/%d", monedasObtNivel, monedas_Nivel), 140, 280, 20, WHITE);
+        DrawText(TextFormat("LLAVES: %d/%d", llavesObtNivel, llaves_Nivel), 140, 320, 20, WHITE);
+        DrawText(TextFormat("PASOS: %d", pasosNivel), 140, 360, 20, WHITE);
+         DrawText(TextFormat("CASILLAS DISPONIBLES PARA MOVERSE: %d", celdasLibres), 140, 400, 20, WHITE);
         if(nivel < 3){
-            DrawText("Presiona 'ENTER' para ir al siguiente nivel", 120, 440, 20, WHITE);
+            DrawText("Presiona 'ENTER' para ir al siguiente nivel", 120, 480, 20, WHITE);
         }else {
             DrawText("Presiona 'ENTER' para ver tu puntaje final", 120, 440, 20, WHITE);
         }
@@ -181,8 +182,8 @@ void cambiarNivel(){
     iniciandoNivel = true;
     camX = 0;
     camY=0;
-    jugadorX=2;
-    jugadorY=2;
+    jugadorX=1;
+    jugadorY=1;
     monedasObtNivel = 0;
     pasosNivel = 0;
     llavesObtNivel = 0;

@@ -64,8 +64,6 @@ validarMovimiento:
         RET
 
 ;--------------- CALCULAR PUNTAJE FINAL --------------------
-
-
 calcularPuntaje:
     ; edi = monedas recolectadas
     ; esi = llaves recolectadas
