@@ -70,79 +70,69 @@ void dibujar_mapa(char *mapActual, int camX, int camY, int mapSize){
 
             int indice = mapY * mapSize + mapX;
 
-            /*
-                # = Pared
-                . = Camino
-                P = Jugador
-                M = Moneda
-                K = Llave
-                D = Puerta
-                E = Salida
-            */
-
-            //Cambiar los caracteres por las texturas
+            //Cambiar los caracteres de la matriz por las texturas
             switch(mapActual[indice]){
-                case '#':
+                case '#': //Pared
                     DrawTexturePro(pared, 
                         (Rectangle){500.0f, 500.0f, (float)pared.width - 1000.0f,
-                        (float)pared.height - 1000.0f}, //Imagen completa
-                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)}, //Imagen escalada
+                        (float)pared.height - 1000.0f}, //Imagen completa que luego se escala para 32 pixeles
+                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)},
                         (Vector2){0,0},
                         0.0f,
                         WHITE
                     );
                     break;
-                case '.':
+                case '.': //Camino
                     DrawTexturePro(camino, 
                         (Rectangle){500.0f, 500.0f, (float)camino.width - 1000.0f,
-                        (float)camino.height-1000.0f}, //Origen (imagen completa)
-                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)}, //destino escalado
+                        (float)camino.height-1000.0f}, //Imagen completa que luego se escala para 32 pixeles
+                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)},
                         (Vector2){0,0},
                         0.0f,
                         WHITE
                     );
                     break;
-                case 'M':
+                case 'M': //Moneda
                     DrawTexturePro(moneda, 
                         (Rectangle){25.0f, 40.0f, (float)moneda.width - 50.0f,
-                        (float)moneda.height - 80.0f}, //Origen (imagen completa)
-                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)}, //destino escalado
+                        (float)moneda.height - 80.0f}, //Imagen completa que luego se escala para 32 pixeles
+                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)},
                         (Vector2){0,0},
                         0.0f,
                         WHITE
                     );
                     break;
-                case 'K':
+                case 'K': //Llave
                     DrawTexturePro(llave, 
                         (Rectangle){2.0f, 6.0f, (float)llave.width - 4.0f,
-                        (float)llave.height - 12.0f}, //Origen (imagen completa)
-                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)}, //destino escalado
+                        (float)llave.height - 12.0f}, //Imagen completa que luego se escala para 32 pixeles
+                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)},
                         (Vector2){0,0},
                         0.0f,
                         WHITE
                     );
                     break;
-                case 'D':
+                case 'D': //Puerta
                     DrawTexturePro(puerta, 
                         (Rectangle){390.0f, 50.0f, (float)puerta.width - 780.0f,
-                        (float)puerta.height - 100.0f}, //Origen (imagen completa)
-                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)}, //destino escalado
+                        (float)puerta.height - 100.0f}, //Imagen completa que luego se escala para 32 pixeles
+                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)},
                         (Vector2){0,0},
                         0.0f,
                         WHITE
                     );
                     break;
-                case 'E':
+                case 'E': //Salida
                     DrawTexturePro(salida, 
                         (Rectangle){170.0f, 50.0f, (float)salida.width - 340.0f,
-                        (float)salida.height - 100.0f}, //Origen (imagen completa)
-                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)}, //destino escalado
+                        (float)salida.height - 100.0f}, //Imagen completa que luego se escala para 32 pixeles
+                        (Rectangle){(float)(j*TILE), (float)(i*TILE + PANEL_INFO), (float)(TILE+1), (float)(TILE+1)},
                         (Vector2){0,0},
                         0.0f,
                         WHITE
                     );
                     break;
-                case 'P':
+                case 'P': //Jugador
                      //El jugador se dibuja aparte para que siempre quede encima de los objetos del mapa
                     break;
                 default: TraceLog(LOG_WARNING, "Elemento no conocido");
@@ -171,7 +161,7 @@ void actualizarMusica(){
 
 //Cerrar y limpiar al finalizar el programa
 void finGraficos(){
-    //Quitar todas las texturas cargadas
+    //Quitar todas las texturas cargadas y la música antes de cerrar el juego
     UnloadTexture(pared);
     UnloadTexture(camino);
     UnloadTexture(puerta);

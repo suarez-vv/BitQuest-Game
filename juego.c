@@ -31,9 +31,9 @@ int nivelesComp = 0; //Cantidad de niveles completados
 int puntajeFinal = 0; //Puntaje final del juego
 int estado = 1; //1=Jugando un nivel, 2=Pasando de nivel, 3=Fin del juego
 
-//Variables para al presionar la tecla se siga moviendo
+//Variables para al presionar la tecla de movimiento el personaje se siga moviendo
 float tiempoMovimiento = 0.0f;
-float retrasoMovimiento = 0.20f;
+float retrasoMovimiento = 0.00f; //0.20
 
 void iniciarJuego(){
     cambiarNivel();
@@ -72,7 +72,7 @@ void estadoJuego(){
     if(IsKeyPressed(KEY_W)){ //Hacia arriba
         destinoY--;  
         mover = true;
-        tiempoMovimiento = 0.0f; //Reiniciar el tiempo de movimiento para que al mantener presionada la tecla se siga moviendo cada cierto tiempo
+        tiempoMovimiento = 0.0f; //Reiniciar el tiempo de movimiento para que al mantener presionada la tecla se vea fluido el movimiento sin saltar casillas
     }
     else if(IsKeyPressed(KEY_A)){//Izquierda
         destinoX--; 
@@ -138,7 +138,7 @@ void estadoJuego(){
             actualiMapa = false;
         }
 
-        //Sí se realizo un movimiento valido y hay que actualizar el mapa, sino no se movera y no hay que atcualizar mapa
+        //Si se realizo un movimiento valido y hay que actualizar el mapa, sino no se movera y no hay que atcualizar mapa
         if(actualiMapa && (jugadorY != destinoY || jugadorX != destinoX)){
             actualizarMapa(mapActual, mapSize, jugadorY, jugadorX, destinoY, destinoX);
 
@@ -157,6 +157,7 @@ void estadoJuego(){
     if(camX < 0) camX = 0;
     if(camY < 0) camY = 0;
 
+    //Posicionar la camara si hubo movimiento del jugador
     if(camX > mapSize - VIEW) camX = mapSize - VIEW;
     if(camY > mapSize - VIEW) camY = mapSize - VIEW;
 }
@@ -164,42 +165,42 @@ void estadoJuego(){
 void llamarDibujar(bool *status){
     BeginDrawing();
     actualizarMusica();
-    ClearBackground((Color){55.6f, 51.3f, 47.4f, 255.0f});
+    ClearBackground((Color){55.6f, 51.3f, 47.4f, 255.0f}); //Fondo del juego
 
-    if(estado == 1){
+    if(estado == 1){ //Si se esta jugando un nivel se dibuja el mapa, jugador y el panel de información
         DrawRectangle(0, 0, 640, 80, BLACK);
         DrawLine(0, 80, 640, 80, BLACK);
         dibujar_mapa(mapActual, camX, camY, mapSize);
         dibujarJugador(jugadorX, jugadorY, camX, camY);
 
-        DrawText(TextFormat("Nivel: %d", nivel), 80, 10, 22, WHITE);
-        DrawText(TextFormat("Monedas: %d", monedasObtNivel), 180, 10, 22, GOLD);
-        DrawText(TextFormat("Llaves: %d", llavesUtilNivel), 340, 10, 22, WHITE);
+        DrawText(TextFormat("Nivel: %d", nivel), 65, 10, 22, WHITE);
+        DrawText(TextFormat("IrvingCoins: %d", monedasObtNivel), 170, 10, 22, GOLD);
+        DrawText(TextFormat("Llaves: %d", llavesUtilNivel), 350, 10, 22, WHITE);
         DrawText(TextFormat("Pasos: %d", pasosNivel), 470, 10, 22, WHITE);
         DrawText("W: Arriba, S: Abajo, A: Izquierda, D: Derecha, Q: Salir", 120, 45, 17, LIGHTGRAY);
-    }else if(estado == 2){
+    }else if(estado == 2){ //Si se termino un nivel se muestran las estadisticas del nivel para pasar al siguiente o a la pantalla final
         ClearBackground(BLACK);
         DrawText("FELICIDADES!!!", 200, 150, 40, YELLOW);
         DrawText(TextFormat("NIVEL %d COMPLETADO", nivel), 120, 220, 20, WHITE);
-        DrawText(TextFormat("MONEDAS: %d/%d", monedasObtNivel, monedas_Nivel), 140, 280, 20, WHITE);
+        DrawText(TextFormat("IRVINGCOINS: %d/%d", monedasObtNivel, monedas_Nivel), 140, 280, 20, WHITE);
         DrawText(TextFormat("LLAVES: %d/%d", llavesObtNivel, llaves_Nivel), 140, 320, 20, WHITE);
         DrawText(TextFormat("PASOS: %d", pasosNivel), 140, 360, 20, WHITE);
          DrawText(TextFormat("CASILLAS DISPONIBLES PARA MOVERSE: %d", celdasLibres), 140, 400, 20, WHITE);
-        if(nivel < 3){
+        if(nivel < 4){
             DrawText("Presiona 'ENTER' para ir al siguiente nivel", 120, 480, 20, WHITE);
         }else {
             DrawText("Presiona 'ENTER' para ver tu puntaje final", 120, 440, 20, WHITE);
         }
-    }else if(estado == 3){
+    }else if(estado == 3){ //Si se completaron todos los niveles se muestran las estadisticas finales del juego
         static bool continuar = false;
         ClearBackground(BLACK);
         puntajeFinal = calcularPuntaje(monedasAcum, llavesAcum, pasosAcum, nivelesComp);
         DrawText("GAME OVER", 200, 120, 40, YELLOW);
         DrawText("GRACIAS POR JUGAR", 100, 400, 40, GOLD);
-        DrawText(TextFormat("Monedas totales recolectadas: %d/%d", monedasAcum, totalMonedas), 50, 200, 30, WHITE);
-        DrawText(TextFormat("Pasos totales: %d", pasosAcum), 190, 240, 30, WHITE);
+        DrawText(TextFormat("IrvingCoins recolectadas: %d/%d", monedasAcum, totalMonedas), 110, 200, 30, WHITE);
+        DrawText(TextFormat("Pasos totales: %d", pasosAcum), 180, 240, 30, WHITE);
         DrawText(TextFormat("Niveles completados: %d", nivelesComp), 150, 280, 30, WHITE);
-        DrawText(TextFormat("Puntaje final: %d", puntajeFinal), 190, 320, 30, WHITE);
+        DrawText(TextFormat("Puntaje final: %d", puntajeFinal), 180, 320, 30, WHITE);
         DrawText(TextFormat("Presiona 'Enter' para salir..."), 170, 450, 20, DARKGRAY);
         if(IsKeyReleased(KEY_ENTER)){
             continuar = true;
@@ -216,7 +217,7 @@ void limpiar(){
 }
 
 void cambiarNivel(){
-    iniciandoNivel = true;
+    iniciandoNivel = true; //Reiniciar variables que se utilizan durante el nivel
     camX = 0;
     camY=0;
     jugadorX=1;
@@ -225,7 +226,7 @@ void cambiarNivel(){
     pasosNivel = 0;
     llavesObtNivel = 0;
 
-    if(nivel == 4){ //Al acabar el nivel 3 se acaba el juego
+    if(nivel == 4){ //Al acabar el nivel 4 se acaba el juego
         return;
     }
 
@@ -236,7 +237,7 @@ void cambiarNivel(){
         free(mapActual);
     }
 
-    if(nivel == 1){
+    if(nivel == 1){ //Obtener los mapas dependiendo del nivel desde los archivos de mapas
         mapActual = cargarMapa("mapa1.txt", MAP1_SIZE);
         mapSize = MAP1_SIZE;
         return;
@@ -271,7 +272,7 @@ char *cargarMapa(const char *nombreArchivo, int mapSize){
     //Leer el archivo con el mapa
     char *mapa = malloc(mapSize*mapSize);
 
-    char linea[200]; //El mapa no debera tener una linea mayor a 200 caracteres, en ese caso habra que modificar esto
+    char linea[200]; //El mapa no deberia tener una linea mayor a 200 caracteres, en ese caso de tener un mapa que si lo supere esto se modifica
     for(int i=0; i<mapSize; i++){
         fgets(linea, sizeof(linea), archivo);
         for(int j=0; j<mapSize; j++){
@@ -283,20 +284,20 @@ char *cargarMapa(const char *nombreArchivo, int mapSize){
 }
 
 //Funciones de ensamblador
-//Contar un caracter especifico del mapa (Funcion obligatoria 1)
+// 1 Contar un caracter especifico del mapa
 int contarCaracter(char *mapa, int mapSize, char buscado);
 
-//Contar un caracter especifico del mapa (Funcion obligatoria 2)
-int validarMovimiento(char *mapa, int mapSize, int newColumna, int newFila); //(Se puede usar en lugar de actualizarMapa)
+// 2 Contar un caracter especifico del mapa
+int validarMovimiento(char *mapa, int mapSize, int newColumna, int newFila);
 
-//Calcular puntaje al finalizar nivel (Funcion olbigatoria 3)
+// 3 Calcular puntaje al finalizar nivel
 int calcularPuntaje(int totalMonedasAcum, int llavesAcum, int cantPasos, int nivelComp);
 
-//Detectar si hay cierto objeto en el mapa (Funcion olbigatoria 4)
-int detectarObjeto(char *mapa, int mapSize, int columnaRev, int filaRev, char buscado); //contarAcumulables (Se puede usar en lugar de abrirPuerta)
+// 4 Detectar si hay cierto objeto en el mapa
+int detectarObjeto(char *mapa, int mapSize, int columnaRev, int filaRev, char buscado);
 
-//Contar un caracter especifico del mapa (Funcion obligatoria 5)
-int contarCeldasLibres(char *mapa, int mapSize); //contarCeldasDisp
+// 5 Contar un caracter especifico del mapa
+int contarCeldasLibres(char *mapa, int mapSize);
 
 //Actualizar el mapa luego de un movimiento
 void actualizarMapa(char *mapa, int mapSize, int columnaActual, int filaActual, int columnaMov, int filaMov);

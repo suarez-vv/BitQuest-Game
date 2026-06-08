@@ -21,9 +21,9 @@ contarCaracter:
 
         MOV     R11B, [RDI]
         CMP     R11B, R9B
-        JNE     .siguiente
+        JNE     .siguiente ;Si no es el caracter buscado, saltar al siguiente y no contar
         
-        INC EAX
+        INC EAX ;Si es el caracter buscado, incrementar el contador
 
     .siguiente:
         INC     RDI
@@ -40,7 +40,7 @@ validarMovimiento:
     ;edx = Propuesta de nueva fila
     ;ecx = Propuesta de nueva columna
 
-    TEST    RDI, RDI
+    TEST    RDI, RDI ;Comprobar que no venga vacio
     JZ      .fin_validarMovimiento
     ;Calcular indice
     MOV     EAX, EDX
@@ -70,21 +70,21 @@ calcularPuntaje:
     ; edx = pasos realizados
     ; ecx = niveles completados
 
-    ; monedas * 100
+    ; Monedas - Valor: 100 c/u
     mov eax, edi
     imul eax, 100
 
-    ; llaves * 500
+    ; Llaves - Valor: 500 c/u
     mov r8d, esi
     imul r8d, 500
     add eax, r8d
 
-    ; niveles * 1000
+    ; Niveles - Valor: 1000 c/u
     mov r9d, ecx
     imul r9d, 1000
     add eax, r9d
 
-    ; pasos * 2 (penalización)
+    ; Pasos - Valor: 2 c/u (penalización)
     mov r10d, edx
     imul r10d, 2
     sub eax, r10d
@@ -100,7 +100,7 @@ detectarObjeto:
     ;ecx = Propuesta de nueva columna
     ;r8 = Caracter a comparar
 
-    test rdi, rdi
+    test rdi, rdi ;Verificar que no venga vacio
     jz .fin_detectarObjeto
 
     ;Calcular indice
@@ -111,14 +111,14 @@ detectarObjeto:
     MOVSXD  rax, eax
     MOV     r10b, [rdi + rax]
 
-    cmp r10b, r8b        
-    jne .no_es
+    cmp r10b, r8b   
+    jne .no_es ;Si el caracter en la posicion propuesta no es el que se esta detectando salta a no_es
 
-    mov eax, 1
+    mov eax, 1 ;Si el caracter en la posicion propuesta es el que se esta detectando devuelve un 1
     jmp .fin_detectarObjeto
 
     .no_es:
-        mov eax, 0
+        mov eax, 0 ;Devuelve un cero si no es el caracter que se esta detectando
 
     .fin_detectarObjeto:
         ret

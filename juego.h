@@ -20,20 +20,20 @@ void cambiarNivel();
 //Cargar un mapa desde un archivo de texto externo
 char *cargarMapa(const char *nombreArchivo, int mapSize);
 
-//Contar un caracter especifico del mapa (Funcion obligatoria 1)
+// 1 Contar un caracter especifico del map
 int contarCaracter(char*, int, char);
 
-//Contar un caracter especifico del mapa (Funcion obligatoria 2)
-int validarMovimiento(char*, int, int, int); //(Se puede usar en lugar de actualizarMapa)
+// 2 Contar un caracter especifico del mapa
+int validarMovimiento(char*, int, int, int);
 
-//Calcular puntaje al finalizar el juego (Funcion olbigatoria 3)
+// 3 Calcular puntaje al finalizar el juego
 int calcularPuntaje(int, int, int, int);
 
-//Detectar si hay cierto objeto en el mapa (Funcion olbigatoria 4)
-int detectarObjeto(char*, int, int, int, char); //contarAcumulables (Se puede usar en lugar de abrirPuerta)
+// 4 Detectar si hay cierto objeto en el mapa
+int detectarObjeto(char*, int, int, int, char);
 
-//Contar un caracter especifico del mapa (Funcion obligatoria 5)
-int contarCeldasLibres(char*, int); //contarCeldasDisp
+// 5 Contar un caracter especifico del mapa 
+int contarCeldasLibres(char*, int);
 
 //Actualizar caracteres de mapa
 void actualizarMapa(char*, int, int, int, int, int);
