@@ -1,24 +1,67 @@
-# BitQuest-Proyecto-Final-Lenguaje-Ensamblador
-Repositorio de proyecto dedicado a realizarun juego "BitQuest" mediante código híbrido de lenguaje ensamblador y C.
+# BitQuest
+Videojuego 2D desarrollado en **C** y **NASM x86-64** utilizando la biblioteca gráfica **Raylib**.
 
-Este programa fue escrito en un sistema operativo Linux Mint 22.3, por lo que para las instrucciones de compilación de usaron las establecidas para linux.
-Se creo un script “build.sh” el cual se encuentra en la carpeta del repositorio que al ejecutarlo, ejecuta las instrucciones de compilación de NASM:
+El proyecto integra programación de alto y bajo nivel para la construcción de un motor de juego modular, combinando lógica de juego implementada en C con rutinas de procesamiento desarrolladas en lenguaje ensamblador.
 
-nasm -f elf64 *".asm" -o "procesos".o
+## Objetivo
+Desarrollar un videojuego 2D que integrara programación en C y lenguaje ensamblador NASM x86-64 para aplicar conceptos de programación de sistemas, desarrollo de videojuegos e interacción entre software de alto y bajo nivel.
 
+## Tecnologías utilizadas
 
-De compilación de los archivos de C:
+* C
+* NASM x86-64
+* Raylib
+* GCC
+* Linux
 
-gcc -c main.c juego.c graficos.c
+## Características
 
-Y por último el ensamblado de los archivos:
+* Arquitectura modular.
+* Integración entre C y ensamblador.
+* Renderizado gráfico mediante Raylib.
+* Compilación multiplataforma en entornos Linux.
+* Separación entre componentes gráficos, lógica del juego y procesamiento de bajo nivel.
 
-gcc main.o juego.o graficos.o procesos.o -o "BitQuest" -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+## Estructura del proyecto
 
-Por lo que para realizar la compilación del programa solo hay que ejecutar dicho script desde la terminal:
+* `main.c` - Punto de entrada del programa.
+* `juego.c` - Lógica principal del juego.
+* `graficos.c` - Renderizado y manejo gráfico.
+* `procesos.asm` - Rutinas desarrolladas en NASM x86-64.
+* `build.sh` - Script de compilación.
 
+## Compilación
+
+El repositorio incluye un script denominado `build.sh`.
+
+Para compilar el proyecto:
+
+```bash
+chmod +x build.sh
 ./build.sh
+```
 
-Y el programa ya ensamblado se guarda con el nombre “BitQuest”, y de igual manera solo hay que ejecutarlo desde la terminal:
+## Ejecución
 
+Una vez compilado el proyecto, ejecutar:
+
+```bash
 ./BitQuest
+```
+
+## Conocimientos implementados
+
+Durante el desarrollo de BitQuest se reforzaron conocimientos en:
+
+* Programación en C.
+* Programación en lenguaje ensamblador NASM x86-64.
+* Integración entre código ensamblador y C.
+* Desarrollo modular de software.
+* Uso de bibliotecas gráficas mediante Raylib.
+* Proceso de compilación y enlazado en entornos Linux.
+
+## Autores
+
+* Suárez Vega, Vladimir
+* Zermeño Ojeda, Paola
+* Zermeño Ojeda, Diana Valeria
