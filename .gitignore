@@ -1,0 +1,16 @@
+#Archivos de objeto
+*.o
+
+#Ejecutable
+BitQuest
+
+#Carpeta de binarios
+bin/
+
+#Archivos temporales
+*.swp
+.*swo
+
+#Archivos de sistema
+.DS_Store
+Thumbs.db

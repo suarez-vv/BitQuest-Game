@@ -262,7 +262,9 @@ void cambiarNivel(){
 
 //Cargar un mapa desde un archivo de texto externo
 char *cargarMapa(const char *nombreArchivo, int mapSize){
-    FILE *archivo = fopen(nombreArchivo, "r");
+    char ruta[256];
+    snprintf(ruta, sizeof(ruta), "assets/maps/%s", nombreArchivo);
+    FILE *archivo = fopen(ruta, "r");
 
     if(!archivo){
         TraceLog(LOG_WARNING, "No se pudo abrir el archivo del mapa");

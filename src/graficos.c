@@ -19,19 +19,19 @@ void iniciarGraficos(){
     SetTargetFPS(120);
 
     InitAudioDevice();
-    musicaFondo = LoadMusicStream("musicaFondo.mp3");
+    musicaFondo = LoadMusicStream("assets/audio/musicaFondo.mp3");
     if(musicaFondo.stream.buffer == 0) TraceLog(LOG_WARNING, "La música del fondo no se cargó correctamente");
     PlayMusicStream(musicaFondo);
     SetMusicVolume(musicaFondo, 0.5f);
 
     //Poner las imagenes de las texturas de cada objet
-    pared = LoadTexture("Pared.png");
-    camino = LoadTexture("Piso.png");
-    puerta = LoadTexture("Puerta.png");
-    moneda = LoadTexture("Moneda.png");
-    jugador = LoadTexture("Jugador.png");
-    salida = LoadTexture("Salida.png");
-    llave = LoadTexture("Llave.png");
+    pared = LoadTexture("assets/images/Pared.png");
+    camino = LoadTexture("assets/images/Piso.png");
+    puerta = LoadTexture("assets/images/Puerta.png");
+    moneda = LoadTexture("assets/images/Moneda.png");
+    jugador = LoadTexture("assets/images/Jugador.png");
+    salida = LoadTexture("assets/images/Salida.png");
+    llave = LoadTexture("assets/images/Llave.png");
 
     //Suavizar las orillas de las texturas
     SetTextureFilter(pared, TEXTURE_FILTER_POINT);

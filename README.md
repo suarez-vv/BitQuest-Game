@@ -4,7 +4,8 @@ Videojuego 2D desarrollado en **C** y **NASM x86-64** utilizando la biblioteca g
 El proyecto integra programación de alto y bajo nivel para la construcción de un motor de juego modular, combinando lógica de juego implementada en C con rutinas de procesamiento desarrolladas en lenguaje ensamblador.
 
 ## Objetivo
-Desarrollar un videojuego 2D que integrara programación en C y lenguaje ensamblador NASM x86-64 para aplicar conceptos de programación de sistemas, desarrollo de videojuegos e interacción entre software de alto y bajo nivel.
+
+Desarrollar un videojuego 2D que integrara programación en C y lenguaje ensamblador NASM x86-64 aplicando conceptos de programación de sistemas, desarrollo de videojuegos e interacción de software de alto y bajo nivel.
 
 ## Tecnologías utilizadas
 
@@ -18,6 +19,8 @@ Desarrollar un videojuego 2D que integrara programación en C y lenguaje ensambl
 
 * Arquitectura modular.
 * Integración entre C y ensamblador.
+* Exploración de mapas de gran tamaño mediante una ventana de visualización dinámica.
+* Sistema de múltiples niveles con dificultad progresiva.
 * Renderizado gráfico mediante Raylib.
 * Compilación multiplataforma en entornos Linux.
 * Separación entre componentes gráficos, lógica del juego y procesamiento de bajo nivel.
@@ -60,8 +63,14 @@ Durante el desarrollo de BitQuest se reforzaron conocimientos en:
 * Uso de bibliotecas gráficas mediante Raylib.
 * Proceso de compilación y enlazado en entornos Linux.
 
+## Documentación
+
+La documentación técnica del proyecto se encuentra disponible en:
+
+* `docs/Reporte-BitQuest.pdf`
+
 ## Autores
 
 * Suárez Vega, Vladimir
-* Zermeño Ojeda, Paola
+* Zermeño Ojeda, Paola Sarahi
 * Zermeño Ojeda, Diana Valeria
