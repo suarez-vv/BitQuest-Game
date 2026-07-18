@@ -202,6 +202,10 @@ docs/Documentacion-Tecnica-BitQuest.pdf
 - Zermeño Ojeda, Paola Sarahi
 - Zermeño Ojeda, Diana Valeria
 
+## Nota
+
+Proyecto desarrollado originalmente con fines académicos y educativos para practicar y fortalecer conocimientos relacionados con programación en C, programación en ensamblador NASM x86-64, integración entre lenguajes de alto y bajo nivel, desarrollo de videojuegos, manejo de memoria dinámica, procesamiento de matrices bidimensionales y programación gráfica utilizando Raylib.
+
 ## Historial del Proyecto
 
 - Desarrollo original: **mayo-junio de 2026**
